@@ -1,9 +1,4 @@
-# Happyfox assignment
-
-
-## Description
-Python application to read, store and process emails using gmail APIs
-
+# Email processing
 
 ## Table of Contents
 
