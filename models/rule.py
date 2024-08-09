@@ -38,10 +38,7 @@ class Action:
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
-            action_type=data["action"],
-            param=data.get("value", None)
-        )
+        return cls(action_type=data["action"], param=data.get("value", None))
 
 
 class Condition:
@@ -73,7 +70,9 @@ class Condition:
         if isinstance(email_dict[self.field_name], str) and isinstance(self.value, str):
             return self.value in email_dict[self.field_name]
         else:
-            raise ValueError("Contains condition requires field name and value to be strings.")
+            raise ValueError(
+                "Contains condition requires field name and value to be strings."
+            )
 
     def _equals(self, email_dict: dict) -> bool:
         return self.value == email_dict[self.field_name]
@@ -81,23 +80,41 @@ class Condition:
     def _less_than(self, email_dict: dict):
         if isinstance(email_dict[self.field_name], int) and isinstance(self.value, int):
             return email_dict[self.field_name] < self.value
-        elif isinstance(email_dict[self.field_name], datetime.datetime) and isinstance(self.value, datetime.datetime):
+        elif isinstance(email_dict[self.field_name], datetime.datetime) and isinstance(
+            self.value, datetime.datetime
+        ):
             return email_dict[self.field_name] < self.value
         else:
-            raise ValueError("Less than condition requires field name and value to be integers or datetime objects.")
+            raise ValueError(
+                "Less than condition requires field name and value to be integers or datetime objects."
+            )
 
     @classmethod
     def from_dict(cls, data):
+
+        if data["field_name"] == "received_time":
+            received_date = datetime.datetime.strptime(
+                data["value"], "%Y-%m-%d %H:%M:%S"
+            )
+            received_date = received_date.replace(tzinfo=datetime.timezone.utc)
+            data["value"] = received_date
+
         return cls(
             field_name=data["field_name"],
             predicate=data["predicate"],
-            value=data["value"]
+            value=data["value"],
         )
 
 
 class Rule:
 
-    def __init__(self, description: str, collection_predicate: str, conditions: list[Condition], actions: list[Action]):
+    def __init__(
+        self,
+        description: str,
+        collection_predicate: str,
+        conditions: list[Condition],
+        actions: list[Action],
+    ):
         self.description = description
         self.collection_predicate = collection_predicate
         self.conditions = conditions

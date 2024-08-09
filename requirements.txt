@@ -1,0 +1,4 @@
+factory_boy==3.3.0
+google_api_python_client==2.140.0
+google_auth_oauthlib==1.2.1
+protobuf==5.27.3

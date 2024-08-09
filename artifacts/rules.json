@@ -7,24 +7,18 @@
         {
           "field_name": "subject",
           "predicate": "contains",
-          "value": "GRE"
+          "value": "easdfewqq"
         },
         {
-          "field_name": "message",
-          "predicate": "contains",
-          "value": "Top companies"
+          "field_name": "subject",
+          "predicate": "eq",
+          "value": "GRE Classes Starting Soon!"
         }
       ],
       "actions": [
         {
           "action": "move",
-          "value": "inbox"
-        },
-        {
-          "action": "mark as read"
-        },
-        {
-          "action": "mark as unread"
+          "value": "spam"
         }
       ]
     },
@@ -33,24 +27,17 @@
       "collection_predicate": "all",
       "conditions": [
         {
-          "field_name": "from",
-          "predicate": "eq",
-          "value": "value1"
+          "field_name": "received_time",
+          "predicate": "less than",
+          "value": "2024-09-08 00:00:00"
         },
         {
           "field_name": "subject",
           "predicate": "contains",
-          "value": "interview"
+          "value": "viewed by 1 recruiter today"
         }
       ],
       "actions": [
-        {
-          "action": "move",
-          "value": "inbox"
-        },
-        {
-          "action": "mark as read"
-        },
         {
           "action": "mark as unread"
         }

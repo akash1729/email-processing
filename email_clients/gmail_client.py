@@ -15,14 +15,13 @@ from email_clients.errors import ClientConnectionError
 
 
 class GmailClient(EmailClient):
-    SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+    SCOPES = [
+        "https://www.googleapis.com/auth/gmail.readonly",
+        "https://www.googleapis.com/auth/gmail.modify",
+    ]
 
     def __init__(self):
         self.email_client_name = "gmail"
-        self.token_file_path = os.path.join(
-            os.path.dirname(__file__), "token.json"
-        )
-
         self.service = None
         self.credentials = None
 
@@ -60,10 +59,9 @@ class GmailClient(EmailClient):
 
     def _get_credentials(self, credential_path) -> Credentials:
         creds = None
-        if os.path.exists(self.token_file_path):
-            creds = Credentials.from_authorized_user_file(
-                self.token_file_path, self.SCOPES
-            )
+        token_file_path = os.path.join(os.path.dirname(credential_path), "token.json")
+        if os.path.exists(token_file_path):
+            creds = Credentials.from_authorized_user_file(token_file_path, self.SCOPES)
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
@@ -73,7 +71,7 @@ class GmailClient(EmailClient):
                 )
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
-            with open(self.token_file_path, "w") as token:
+            with open(token_file_path, "w") as token:
                 token.write(creds.to_json())
 
         return creds
@@ -131,16 +129,20 @@ class GmailClient(EmailClient):
         return content
 
     def mark_as_read(self, msg_id: str, user_id: str = "me") -> None:
-        pass
+        self.service.users().messages().modify(
+            userId="me", id=msg_id, body={"removeLabelIds": ["UNREAD"]}
+        ).execute()
 
     def mark_as_unread(self, msg_id: str, user_id: str = "me") -> None:
-        pass
+        self.service.users().messages().modify(
+            userId="me", id=msg_id, body={"addLabelIds": ["UNREAD"]}
+        ).execute()
 
     def move_message(self, msg_id: str, destination: str, user_id: str = "me") -> None:
-        print("moving message to inbox ", msg_id)
+        self.service.users().messages().modify(
+            userId="me", id=msg_id, body={"addLabelIds": [destination.upper()]}
+        ).execute()
 
     @property
     def client_name(self) -> str:
         return self.email_client_name
-
-

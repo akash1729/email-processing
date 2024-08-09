@@ -10,12 +10,12 @@ class EmailService:
         self.email_client = email_client
         self.data_store = data_store
 
-    def fetch_and_store_emails(self):
-        emails = self.email_client.fetch_emails()
+    def fetch_and_store_emails(self, email_count=10, email_label=""):
+        emails = self.email_client.fetch_emails(max_results=email_count, query=email_label)
         for email in emails:
             email_obj = Email.create_email_client(email, self.email_client.client_name)
 
             self.data_store.add_email(email_obj)
 
-    def store_emails(self, emails):
-        self.email_service.store_emails(emails)
+    def get_all_email_from_datastore(self):
+        return self.data_store.get_all_emails()

@@ -2,6 +2,7 @@ import sqlite3
 from models.email import Email
 from datastore.datastore_interface import EmailDataStore
 import os
+import datetime
 
 create_table_query = """
     CREATE TABLE IF NOT EXISTS emails (
@@ -11,7 +12,7 @@ create_table_query = """
         content TEXT NOT NULL,
         received_time TIMESTAMP NOT NULL,
         email_clients VARCHAR NOT NULL,
-        reference_id VARCHAR NOT NULL,
+        reference_id VARCHAR UNIQUE NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 """
@@ -50,7 +51,7 @@ class SQLiteEmailManager(EmailDataStore):
             cursor.execute(
                 """
             INSERT INTO emails (from_add, subject, content, received_time, email_clients, reference_id)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(reference_id) DO NOTHING
             """,
                 (
                     email.from_add,
@@ -64,7 +65,9 @@ class SQLiteEmailManager(EmailDataStore):
 
     def get_all_emails(self):
         with SQLiteManager(self.db_path) as cursor:
-            cursor.execute("SELECT * FROM emails")
+            cursor.execute(
+                "SELECT id, from_add, subject, content, received_time, email_clients, reference_id  FROM emails"
+            )
             emails = cursor.fetchall()
 
         email_objs = []
@@ -73,7 +76,9 @@ class SQLiteEmailManager(EmailDataStore):
                 from_add=email[1],
                 subject=email[2],
                 message=email[3],
-                received_time=email[4],
+                received_time=datetime.datetime.strptime(
+                    email[4], "%Y-%m-%d %H:%M:%S%z"
+                ),
                 email_client=email[5],
                 reference_id=email[6],
             )
