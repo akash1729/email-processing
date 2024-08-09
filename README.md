@@ -14,7 +14,7 @@ Python application to read, store and process emails using gmail APIs
 
 
 ## Setup
-1. Setup venv and install dependencies. You can run the make command for that `make init`
+1. `make init` will setup the virtual environment and install the required packages
 2. Add your gmail credential file to `/artifact` directory
 3. Configure rules for the application in `/artifact/rules.json`
 4. To run the fetch and store email script, run `python fetch_email.py`. You can set number of emails needed and email label in the script
