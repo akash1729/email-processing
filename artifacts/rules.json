@@ -1,0 +1,60 @@
+{
+  "rules": [
+    {
+      "description": "rule 1",
+      "collection_predicate": "any",
+      "conditions": [
+        {
+          "field_name": "subject",
+          "predicate": "contains",
+          "value": "GRE"
+        },
+        {
+          "field_name": "message",
+          "predicate": "contains",
+          "value": "Top companies"
+        }
+      ],
+      "actions": [
+        {
+          "action": "move",
+          "value": "inbox"
+        },
+        {
+          "action": "mark as read"
+        },
+        {
+          "action": "mark as unread"
+        }
+      ]
+    },
+    {
+      "description": "rule 2",
+      "collection_predicate": "all",
+      "conditions": [
+        {
+          "field_name": "from",
+          "predicate": "eq",
+          "value": "value1"
+        },
+        {
+          "field_name": "subject",
+          "predicate": "contains",
+          "value": "interview"
+        }
+      ],
+      "actions": [
+        {
+          "action": "move",
+          "value": "inbox"
+        },
+        {
+          "action": "mark as read"
+        },
+        {
+          "action": "mark as unread"
+        }
+      ]
+    }
+  ]
+}
