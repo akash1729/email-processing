@@ -26,3 +26,6 @@ I have written a few tests for the models used. For a production system a lot mo
 ## Improvements that can be made
 1. Add more configuration to the scripts to be passed as command line arguments
 2. Docker images could be created for the scripts
+3. Index on the email table for faster query
+4. Add more tests for the scripts
+5. Add CI/CD pipelines for running the tests and deploying the scripts
